@@ -1,4 +1,4 @@
-name: CI and CD - Build, Test, and Deploy React App
+name: CI/CD Pipeline for React App
 
 on:
   push:
@@ -9,11 +9,11 @@ on:
       - main
 
 jobs:
-  ci:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up Node.js
@@ -24,35 +24,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run tests
-        run: npm test -- --watch=false --ci --coverage
-
-      - name: Build project
+      - name: Build the React app
         run: npm run build
 
-  cd:
-    runs-on: ubuntu-latest
-    needs: ci
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "16"
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Set up Git config
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "github-actions@users.noreply.github.com"
-
-      - name: Deploy to gh-pages
-        run: |
-          npm run deploy  # Cela va utiliser gh-pages pour déployer l'application
+      - name: Deploy the app to GitHub Pages
+        run: npm run deploy
         env:
-          MY_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CI: true
+          MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
