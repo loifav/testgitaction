@@ -16,27 +16,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
 
-      - name: Set up Docker
-        uses: docker/setup-qemu-action@v2
+      - name: Install dependencies
+        run: npm install
 
-      - name: Build Docker image
-        run: |
-          docker build -t my-react-app .
-
-      - name: Run Docker container
-        run: |
-          docker run -d -p 3000:3000 my-react-app
-
-      - name: Configure Git user
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+      - name: Build the React app
+        run: npm run build
 
       - name: Deploy the app to GitHub Pages
         run: npm run deploy
         env:
-          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN2 }}
           CI: true
